@@ -23,7 +23,8 @@ markov-keyboard/
 ├── .gitignore
 ├── biome.json          # Linter / formatter
 ├── package.json
-└── README.md
+├── README.md
+└── Texte.txt
 ```
 
 ## Installation
