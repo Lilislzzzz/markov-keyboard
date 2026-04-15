@@ -18,8 +18,7 @@ Quand l'utilisateur tape "le", le modèle suggère "chat" en premier (40% de pro
 
 ```
 markov-keyboard/
-├── src/
-│   └── index.js        # Modèle Markov + pipeline de prédiction
+├── index.js        # Modèle Markov + pipeline de prédiction
 ├── .editorconfig
 ├── .gitignore
 ├── biome.json          # Linter / formatter
