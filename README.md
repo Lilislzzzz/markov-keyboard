@@ -17,11 +17,10 @@ L'algorithme analyse trois facteurs clés pour suggérer un mot :
 ## 🧠 Le Modèle : Chaînes de Markov
 Nous utilisons une **Chaîne de Markov**, un modèle probabiliste où la prédiction d'un événement dépend de l'état précédent. 
 
-Dans ce projet :
-* **Niveau 1 :** Si vous tapez un mot, le modèle cherche le mot suivant le plus fréquent.
-* **Niveau 2 :** Si vous avez déjà tapé deux mots, le modèle affine sa recherche (contexte de 2 mots).
-* **Top 3 :** Au lieu de ne proposer qu'un seul résultat, nous trions les probabilités pour extraire les 3 meilleures correspondances, offrant ainsi une expérience utilisateur fluide.
+Dans notre application :
 
+* **Analyse du contexte ::** Nous utilisons jusqu'à 2 mots de contexte (Trigrammes). Au-delà, les combinaisons deviennent trop rares dans le corpus pour être pertinentes.
+* **Top 3 automatique :** Au lieu de ne sortir que le résultat maximal, nous trions l'intégralité des probabilités pour extraire et afficher le "Top 3" dans l'interface.
 
 
 ---
