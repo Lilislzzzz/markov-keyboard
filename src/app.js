@@ -4,7 +4,7 @@
  */
 
 import { Predictor } from './core/Predictor.js';
-import { KeyboardUI } from './ui/KeyboardUI.js';
+import { KeyboardUI } from './KeyboardUI.js';
 
 const BOT_REPLY_DELAY_MS = 800;
 const BOT_REPLY_TEXT     = 'alors ça mérite un 20/20 ce clavier ? 😏';
