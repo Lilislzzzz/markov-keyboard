@@ -1,0 +1,29 @@
+{
+  "name": "markov-keyboard",
+  "version": "1.0.0",
+  "description": "Prédiction de saisie au clavier par modèle de Markov — suggestion de mot suivant et autocomplétion en temps réel.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "lint": "biome lint ./src ./tests",
+    "format": "biome format --write ./src ./tests",
+    "check": "biome check --write ./src ./tests"
+  },
+  "dependencies": {
+    "ramda": "^0.30.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@vitest/ui": "^1.5.0",
+    "vite": "^5.2.0",
+    "vitest": "^1.5.0"
+  },
+  "keywords": ["markov", "nlp", "text-prediction", "autocomplete", "keyboard", "ramda", "functional"],
+  "author": "",
+  "license": "MIT"
+}
