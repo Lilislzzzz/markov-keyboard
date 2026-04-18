@@ -1,84 +1,42 @@
-# Modèle de Markov appliqué au textes pour la prédiction de saisie au clavier
+# ⌨️ Clavier Prédictif : Modèle de Markov
+**Projet réalisé par :** Camille Barré • Lilou Slezack • Hugo Letassey
 
-## Principe
+---
 
-Un **modèle de Markov de premier ordre** prédit le prochain mot à partir du mot courant uniquement. À partir d'un corpus de phrases, on construit une **table de transitions** : pour chaque mot, on recense les mots qui le suivent et leur fréquence. Ces fréquences sont ensuite converties en probabilités.
+## 🚀 Présentation du Projet
+Ce projet consiste en la création d'un **clavier virtuel intelligent** capable de prédire les mots suivants en temps réel. Inspiré de l'interface **iOS (Apple)**, il propose une barre de suggestions affichant les **3 mots les plus probables** en fonction de la saisie actuelle.
 
-Exemple :
+### Fonctionnement de la prédiction :
+L'algorithme analyse trois facteurs clés pour suggérer un mot :
+1. **Le contexte :** Analyse des 1 ou 2 mots précédents .
+2. **La saisie en cours :** Filtrage des probabilités selon les premières lettres tapées.
+3. **La fréquence :** Utilisation d'un dictionnaire statistique pour sortir les résultats les plus fréquents.
 
-```
-"le" → { "chat": 0.4, "chien": 0.3, "jardin": 0.2, "fromage": 0.1 }
-```
+---
 
-Quand l'utilisateur tape "le", le modèle suggère "chat" en premier (40% de probabilité).
+## 🧠 Le Modèle : Chaînes de Markov
+Nous utilisons une **Chaîne de Markov**, un modèle probabiliste où la prédiction d'un événement dépend de l'état précédent. 
 
-## Structure
+Dans ce projet :
+* **Niveau 1 :** Si vous tapez un mot, le modèle cherche le mot suivant le plus fréquent.
+* **Niveau 2 :** Si vous avez déjà tapé deux mots, le modèle affine sa recherche (contexte de 2 mots).
+* **Top 3 :** Au lieu de ne proposer qu'un seul résultat, nous trions les probabilités pour extraire les 3 meilleures correspondances, offrant ainsi une expérience utilisateur fluide.
 
-```
-markov-keyboard/
-├── index.js        # Modèle Markov + pipeline de prédiction
-├── .editorconfig
-├── .gitignore
-├── biome.json          # Linter / formatter
-├── package.json
-├── README.md
-└── Texte.txt
-```
 
-## Installation
 
-```bash
-npm install
-```
+---
 
-## Utilisation
+## 🛠️ Stack Technique
+Pour répondre aux exigences de qualité et de performance, nous avons utilisé :
+* **Langage :** JavaScript
+* **Programmation Fonctionnelle :** [Ramda.js](https://ramdajs.com/) pour la manipulation des données.
+* **Qualité de code :** [BiomeJS](https://biomejs.dev/) pour le linting et le formatage.
+* **Interface :** HTML/CSS (Design inspiré d'Apple) et Electron (si applicable). A VOIR
 
-```bash
-npm start
-```
+---
 
-Exemple de sortie :
+## ▶️ Installation et Lancement
 
-```json
-{
-  "stats": {
-    "sentences": 8,
-    "vocabulary": 14,
-    "bigrams": 40
-  },
-  "predictions": [
-    {
-      "input": "le",
-      "predictions": [
-        { "suggestion": "chat", "confidence": "40.0%" },
-        { "suggestion": "chien", "confidence": "30.0%" },
-        { "suggestion": "jardin", "confidence": "10.0%" }
-      ]
-    }
-  ]
-}
-```
-
-## Concepts Ramda utilisés
-
-| Fonction | Usage |
-|---|---|
-| `R.pipe` | Composition de fonctions gauche → droite |
-| `R.map` | Transformation de collections |
-| `R.reduce` | Accumulation (construction de la table) |
-| `R.applySpec` | Création d'objets structurés |
-| `R.converge` | Appliquer plusieurs fonctions puis combiner |
-| `R.curry` | Curryfication pour application partielle |
-| `R.aperture` | Extraction de bigrammes |
-| `R.chain` | flatMap sur les phrases |
-| `R.lensPath` + `R.over` | Mise à jour immuable d'objets imbriqués |
-| `R.sortWith` + `R.descend` | Tri par probabilité décroissante |
-| `R.defaultTo` | Valeurs par défaut sûres |
-
-## Qualité du code
-
-```bash
-npm run check     # lint + format en une commande
-npm run lint      # lint seul
-npm run format    # format seul
-```
+1. **Installer les dépendances :**
+   ```bash
+   npm install
