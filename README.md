@@ -1,6 +1,4 @@
-# markov-keyboard
-
-Modèle de Markov appliqué aux textes pour la prédiction de saisie au clavier, implémenté en JavaScript fonctionnel avec [Ramda](https://ramdajs.com/).
+# Modèle de Markov appliqué au textes pour la prédiction de saisie au clavier
 
 ## Principe
 
