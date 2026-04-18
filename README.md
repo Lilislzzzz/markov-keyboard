@@ -51,8 +51,6 @@ Pour garantir des prédictions pertinentes, nous avons entraîné notre modèle 
 
 ### ▶️ Lancer le code
 Pour lancer le projet et accéder à l'affichage, assurez-vous d'être à la racine du dossier dans votre terminal, puis exécutez les commandes suivantes :
-
-1. **Installer les dépendances :**
    ```bash
    nvm install 20 && nvm use 20
    npm install
