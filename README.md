@@ -54,5 +54,6 @@ Pour lancer le projet et accéder à l'affichage, assurez-vous d'être à la rac
 
 1. **Installer les dépendances :**
    ```bash
+   nvm install 20 && nvm use 20
    npm install
    npm run dev
