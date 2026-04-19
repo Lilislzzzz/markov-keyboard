@@ -1,14 +1,4 @@
-/**
- * MarkovChain.js
- * Modèle de Markov d'ordre N pour la prédiction et la complétion de texte.
- * Utilise Ramda pour une approche fonctionnelle : fonctions courtes, composables et sans effets de bord.
- */
-
 import * as R from 'ramda';
-
-// ─────────────────────────────────────────────
-// TOKENISATION
-// ─────────────────────────────────────────────
 
 const normaliseQuotes = R.pipe(
   (s) => s.replace(/[""«»]/g, '"'),
@@ -28,10 +18,6 @@ const tokenise = R.pipe(
   R.filter(isNonEmpty),
 );
 
-// ─────────────────────────────────────────────
-// CONSTRUCTION DES N-GRAMMES
-// ─────────────────────────────────────────────
-
 const buildContextKey = R.pipe(R.map(R.toLower), R.join(' '));
 
 const ordersUpTo = (maxOrder, index) =>
@@ -48,7 +34,6 @@ const incrementFreq = (freqMap, word) => {
   return freqMap;
 };
 
-/** Enregistre une transition (contexte → mot suivant) dans la table. */
 const recordTransition = (transitions, tokens, index, order) => {
   const key = contextKeyAt(tokens, index, order);
   const next = nextWordAt(tokens, index);
@@ -56,7 +41,6 @@ const recordTransition = (transitions, tokens, index, order) => {
   incrementFreq(transitions.get(key), next);
 };
 
-/** Construit toutes les transitions n-grammes depuis un tableau de tokens. */
 const buildTransitions = (maxOrder, transitions, tokens) => {
   for (let i = 0; i < tokens.length - 1; i++) {
     for (const order of ordersUpTo(maxOrder, i)) {
@@ -66,10 +50,6 @@ const buildTransitions = (maxOrder, transitions, tokens) => {
   return transitions;
 };
 
-// ─────────────────────────────────────────────
-// SCORING ET CLASSEMENT
-// ─────────────────────────────────────────────
-
 const sumValues = (map) =>
   R.reduce((acc, v) => acc + v, 0, [...map.values()]);
 
@@ -78,7 +58,6 @@ const toWeightedCandidate = (total) => ([word, count]) => ({
   probability: count / total,
 });
 
-/** Trie les entrées d'une freqMap par probabilité décroissante et prend les N premiers. */
 const rankByProbability = (freqMap, topN) => {
   const total = sumValues(freqMap);
   return R.pipe(
@@ -93,10 +72,6 @@ const startsWithPrefix = (prefix) => (word) => word.startsWith(prefix);
 const isNotPrefix     = (prefix) => (word) => word !== prefix;
 const matchesPrefix   = (prefix) => R.both(startsWithPrefix(prefix), isNotPrefix(prefix));
 
-// ─────────────────────────────────────────────
-// FRÉQUENCES GLOBALES (UNIGRAMMES)
-// ─────────────────────────────────────────────
-
 const isUnigram = ([key]) => !key.includes(' ');
 
 const accumulateFreq = (freq, [, nextMap]) => {
@@ -106,17 +81,11 @@ const accumulateFreq = (freq, [, nextMap]) => {
   return freq;
 };
 
-/** Extrait les fréquences globales depuis les transitions unigrammes. */
 const globalFrequencies = (transitions) =>
   [...transitions.entries()]
     .filter(isUnigram)
     .reduce(accumulateFreq, new Map());
 
-// ─────────────────────────────────────────────
-// SCORING CONTEXTUEL (COMPLÉTION)
-// ─────────────────────────────────────────────
-
-/** Calcule les scores contextuels pour les candidats commençant par le préfixe. */
 const contextScores = (transitions, contextWords, prefix, maxOrder) => {
   const scores = new Map();
   const orders = R.range(1, Math.min(maxOrder, contextWords.length) + 1).reverse();
@@ -143,11 +112,6 @@ const byScoreDesc  = R.descend(R.prop('score'));
 const thenAlpha    = (a, b) => a.word.localeCompare(b.word);
 const rankByScore  = R.sortWith([byScoreDesc, thenAlpha]);
 
-// ─────────────────────────────────────────────
-// BACK-OFF : contexte du plus long au plus court
-// ─────────────────────────────────────────────
-
-/** Cherche une freqMap en réduisant progressivement la fenêtre de contexte. */
 const backOff = (transitions, contextWords, maxOrder) => {
   const orders = R.range(1, Math.min(maxOrder, contextWords.length) + 1).reverse();
   for (const order of orders) {
@@ -157,13 +121,8 @@ const backOff = (transitions, contextWords, maxOrder) => {
   return null;
 };
 
-// ─────────────────────────────────────────────
-// GÉNÉRATION PROBABILISTE
-// ─────────────────────────────────────────────
-
 const totalWeight = R.reduce((acc, c) => acc + (c.probability ?? c.score ?? 1), 0);
 
-/** Échantillonne un candidat proportionnellement à son poids. */
 const sampleWeighted = (candidates) => {
   const total = totalWeight(candidates);
   let rand = Math.random() * total;
@@ -174,9 +133,6 @@ const sampleWeighted = (candidates) => {
   return candidates[0].word;
 };
 
-// ─────────────────────────────────────────────
-// SÉRIALISATION
-// ─────────────────────────────────────────────
 
 const serialiseTransitions = (transitions) => {
   const obj = {};
@@ -194,12 +150,8 @@ const deserialiseTransitions = (obj) =>
     ]),
   );
 
-// ─────────────────────────────────────────────
-// CLASSE PRINCIPALE
-// ─────────────────────────────────────────────
 
 export class MarkovChain {
-  /** @param {number} order - Nombre de mots de contexte pris en compte */
   constructor(order = 2) {
     this.order = order;
     this.transitions = new Map();
@@ -207,7 +159,6 @@ export class MarkovChain {
     this.totalTokens = 0;
   }
 
-  /** Entraîne le modèle sur un corpus texte. */
   train(text) {
     const tokens = tokenise(text);
     this.totalTokens += tokens.length;
@@ -215,31 +166,15 @@ export class MarkovChain {
     buildTransitions(this.order, this.transitions, tokens);
   }
 
-  /** Entraîne sur plusieurs textes. */
   trainMultiple(texts) {
     R.forEach((t) => this.train(t), texts);
   }
 
-  /**
-   * Prédit les N mots les plus probables après un contexte.
-   * Utilise une stratégie de back-off (contexte long → court).
-   * @param {string[]} contextWords
-   * @param {number}   topN
-   * @returns {{ word: string, probability: number }[]}
-   */
   predictNextWord(contextWords, topN = 3) {
     const freqMap = backOff(this.transitions, contextWords, this.order);
     return freqMap ? rankByProbability(freqMap, topN) : [];
   }
 
-  /**
-   * Propose des complétions pour un préfixe partiel.
-   * Combine score contextuel et fréquence globale.
-   * @param {string}   prefix
-   * @param {string[]} contextWords
-   * @param {number}   topN
-   * @returns {{ word: string, score: number }[]}
-   */
   completeWord(prefix, contextWords = [], topN = 3) {
     if (!prefix) return [];
 
@@ -254,12 +189,6 @@ export class MarkovChain {
     return R.pipe(R.map(scorer), rankByScore, R.take(topN))(candidates);
   }
 
-  /**
-   * Génère une séquence de mots par échantillonnage probabiliste.
-   * @param {string[]} seed
-   * @param {number}   length
-   * @returns {string}
-   */
   generate(seed = [], length = 10) {
     const result = [...seed];
     for (let i = 0; i < length; i++) {
@@ -270,7 +199,6 @@ export class MarkovChain {
     return result.join(' ');
   }
 
-  /** @returns {string} JSON sérialisé du modèle */
   toJSON() {
     return JSON.stringify({
       order:       this.order,
@@ -280,7 +208,6 @@ export class MarkovChain {
     });
   }
 
-  /** @param {string} json @returns {MarkovChain} */
   static fromJSON(json) {
     const data  = JSON.parse(json);
     const chain = new MarkovChain(data.order);
