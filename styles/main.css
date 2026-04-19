@@ -1,6 +1,4 @@
-/* ═══════════════════════════════════════════════════════════
-   MarkovKey — Interface iPhone iMessage
-   ══════════════════════════════════════════════════════════ */
+
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -55,7 +53,6 @@ html, body {
   position: relative;
 }
 
-/* ── Barre de statut ──────────────────────────────────── */
 
 .iphone-status-bar {
   display: flex;
@@ -94,7 +91,6 @@ html, body {
   background: currentColor; border-radius: 0 1px 1px 0; opacity: 0.9;
 }
 
-/* ── Header conversation ──────────────────────────────── */
 
 .iphone-header {
   display: flex;
@@ -161,7 +157,6 @@ html, body {
 }
 .icon-btn:active { background: var(--ios-separator); }
 
-/* ── Zone de messages ─────────────────────────────────── */
 
 .messages-area {
   flex: 1;
@@ -217,7 +212,6 @@ html, body {
   border-bottom-left-radius: 4px;
 }
 
-/* ── Barre de suggestions ─────────────────────────────── */
 
 .suggestions-bar {
   display: flex;
@@ -258,7 +252,6 @@ html, body {
   flex-shrink: 0;
 }
 
-/* ── Barre de saisie ──────────────────────────────────── */
 
 .input-row {
   display: flex;
@@ -319,7 +312,6 @@ html, body {
 }
 .main-input::placeholder { color: var(--ios-gray); }
 
-/* ── Overlay de chargement ────────────────────────────── */
 
 .loading-overlay {
   position: absolute;
@@ -376,7 +368,6 @@ html, body {
   transition: width 0.3s ease;
 }
 
-/* ── Responsive (petits écrans) ───────────────────────── */
 
 @media (max-height: 860px) {
   .iphone-shell {
