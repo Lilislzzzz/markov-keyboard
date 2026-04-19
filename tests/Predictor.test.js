@@ -1,7 +1,4 @@
-/**
- * Predictor.test.js
- * Tests d'intégration pour la façade Predictor.
- */
+
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Predictor } from '../src/core/Predictor.js';
