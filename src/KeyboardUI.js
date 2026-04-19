@@ -1,13 +1,3 @@
-/**
- * KeyboardUI.js
- * Interface style iPhone iMessage avec barre de suggestions Markov.
- * Gère le rendu, les événements et les transitions d'état de l'UI.
- */
-
-// ─────────────────────────────────────────────
-// UTILITAIRES DOM
-// ─────────────────────────────────────────────
-
 const escapeHTML = (str) =>
   str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -29,20 +19,12 @@ const scrollToBottom = (container) => {
   container.scrollTop = container.scrollHeight;
 };
 
-// ─────────────────────────────────────────────
-// CRÉATION DE BULLES
-// ─────────────────────────────────────────────
-
 const createBubble = (text, direction) => {
   const row    = document.createElement('div');
   row.className = `message-row ${direction}`;
   row.innerHTML = `<div class="bubble ${direction}">${escapeHTML(text)}</div>`;
   return row;
 };
-
-// ─────────────────────────────────────────────
-// TEMPLATE HTML DE L'INTERFACE IPHONE
-// ─────────────────────────────────────────────
 
 const IPHONE_TEMPLATE = `
   <div class="iphone-shell">
@@ -152,10 +134,6 @@ const IPHONE_TEMPLATE = `
   </div>
 `;
 
-// ─────────────────────────────────────────────
-// CLASSE PRINCIPALE
-// ─────────────────────────────────────────────
-
 export class KeyboardUI {
   /** @param {HTMLElement} container */
   constructor(container) {
@@ -169,7 +147,6 @@ export class KeyboardUI {
     this._bindEvents();
   }
 
-  // ── Rendu ──────────────────────────────────
 
   _render() {
     this.container.innerHTML = IPHONE_TEMPLATE;
@@ -220,18 +197,12 @@ export class KeyboardUI {
     el('btn-send').classList.toggle('has-text', value.trim().length > 0);
   }
 
-  // ── API publique — callbacks ────────────────
 
   onInput(fn)           { this._onInput           = fn; }
   onSuggestionClick(fn) { this._onSuggestionClick = fn; }
   onSubmit(fn)          { this._onSubmit          = fn; }
 
-  // ── Suggestions ────────────────────────────
 
-  /**
-   * Met à jour les 3 boutons de suggestions.
-   * @param {{ type: string, suggestions: object[], prefix?: string }} result
-   */
   showSuggestions({ suggestions }) {
     this._currentSuggestions = suggestions;
 
@@ -249,11 +220,7 @@ export class KeyboardUI {
     });
   }
 
-  /**
-   * Insère une suggestion dans le champ de saisie.
-   * Remplace le mot en cours ou ajoute après un espace.
-   * @param {{ word: string }} suggestion
-   */
+
   insertSuggestion(suggestion) {
     const input         = el('main-input');
     const value         = input.value;
@@ -271,8 +238,6 @@ export class KeyboardUI {
     this._updateSendBtn(newValue);
     this._onInput?.(newValue);
   }
-
-  // ── Messages ───────────────────────────────
 
   addMessage(text) {
     const area = el('messages-area');
@@ -293,8 +258,6 @@ export class KeyboardUI {
     this._updateSendBtn('');
     this.showSuggestions({ type: 'prediction', suggestions: [] });
   }
-
-  // ── Statut & chargement ────────────────────
 
   setStatus(_, text) {
     const statusEl = el('contact-status');
