@@ -1,9 +1,3 @@
-/**
- * Predictor.js
- * Façade haut niveau : charge le corpus, expose getSuggestions() et learnFromInput().
- * Utilise Ramda pour les transformations de données.
- */
-
 import * as R from 'ramda';
 import { MarkovChain } from './MarkovChain.js';
 
@@ -22,9 +16,6 @@ const STORAGE_KEY    = 'markov_model_v2';
 const LEARN_INTERVAL = 10;
 const MIN_TEXT_LEN   = 3;
 
-// ─────────────────────────────────────────────
-// CHARGEMENT DES FICHIERS
-// ─────────────────────────────────────────────
 
 const fetchText = async (path) => {
   const response = await fetch(path);
@@ -46,17 +37,12 @@ const loadAndTrain = async (chain, path, onProgress, done, total) => {
   }
 };
 
-/** Charge tous les fichiers du corpus séquentiellement. */
 const loadCorpus = async (chain, files, onProgress) => {
   const total = files.length;
   for (const [i, path] of files.entries()) {
     await loadAndTrain(chain, path, onProgress, i + 1, total);
   }
 };
-
-// ─────────────────────────────────────────────
-// PERSISTANCE (localStorage)
-// ─────────────────────────────────────────────
 
 const readFromStorage = () => {
   try {
@@ -82,9 +68,6 @@ const clearStorage = () => {
   }
 };
 
-// ─────────────────────────────────────────────
-// ANALYSE DU TEXTE SAISI
-// ─────────────────────────────────────────────
 
 const splitWords    = R.pipe(R.trim, R.split(/\s+/), R.filter(Boolean));
 const endsWithSpace = (text) => text.endsWith(' ');
@@ -103,10 +86,6 @@ const analyseSaisie = (inputText) => {
 
 const emptySuggestions = { type: 'prediction', suggestions: [] };
 
-// ─────────────────────────────────────────────
-// CLASSE PRINCIPALE
-// ─────────────────────────────────────────────
-
 export class Predictor {
   /** @param {{ order?: number, language?: string }} options */
   constructor({ order = 2, language = 'fr' } = {}) {
@@ -116,11 +95,6 @@ export class Predictor {
     this._sessionTokens  = 0;
   }
 
-  /**
-   * Initialise le modèle : lecture du cache ou entraînement depuis le corpus.
-   * @param {Function} [onProgress] - Callback (done, total, filename)
-   * @returns {Promise<object>} Statistiques du modèle
-   */
   async initialize(onProgress) {
     if (this._restoreFromCache()) return this.chain.getStats();
 
@@ -130,12 +104,7 @@ export class Predictor {
     return this.chain.getStats();
   }
 
-  /**
-   * Retourne 3 suggestions (complétion ou prédiction) pour le texte en cours.
-   * @param {string} inputText
-   * @param {number} [topN=3]
-   * @returns {{ type: string, suggestions: object[], prefix?: string }}
-   */
+ 
   getSuggestions(inputText, topN = 3) {
     if (!this._trained) return emptySuggestions;
 
@@ -153,10 +122,7 @@ export class Predictor {
     return { type: 'prediction', suggestions };
   }
 
-  /**
-   * Apprend depuis une saisie utilisateur et sauvegarde périodiquement.
-   * @param {string} text
-   */
+ 
   learnFromInput(text) {
     if (text.trim().length < MIN_TEXT_LEN) return;
     this.chain.train(text);
@@ -166,12 +132,10 @@ export class Predictor {
     }
   }
 
-  /** Sauvegarde le modèle courant dans le localStorage. */
   saveToStorage() {
     writeToStorage(this.chain.toJSON());
   }
 
-  /** Remet le modèle à zéro (mémoire + cache). */
   reset() {
     this.chain          = new MarkovChain(this.chain.order);
     this._trained       = false;
@@ -186,7 +150,6 @@ export class Predictor {
     };
   }
 
-  // ── Privé ──────────────────────────────────
 
   _restoreFromCache() {
     const saved = readFromStorage();
