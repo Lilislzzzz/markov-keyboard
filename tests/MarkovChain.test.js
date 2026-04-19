@@ -1,8 +1,4 @@
-/**
- * MarkovChain.test.js
- * Tests unitaires avec Vitest.
- * Lancez avec : npm test
- */
+
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { MarkovChain } from '../src/core/MarkovChain.js';
