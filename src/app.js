@@ -1,7 +1,4 @@
-/**
- * app.js
- * Point d'entrée : relie le Predictor (Markov) à l'interface iPhone.
- */
+
 
 import { Predictor } from './core/Predictor.js';
 import { KeyboardUI } from './KeyboardUI.js';
