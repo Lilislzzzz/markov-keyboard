@@ -1,5 +1,3 @@
-
-
 import { Predictor } from './core/Predictor.js';
 import { KeyboardUI } from './KeyboardUI.js';
 
